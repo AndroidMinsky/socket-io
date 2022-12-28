@@ -1,12 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+
+import Game from "./Game";
+import CreateGame from "./CreateGame";
 
 import socket from "../socket";
+import Tabs from "./Tabs";
+import JoinGame from "./JoinGame";
 
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [creatorMode, setCreatorMode] = useState(false);
   const [hero, setHero] = useState({});
   const [players, setPlayers] = useState([]);
 
@@ -89,7 +94,7 @@ export default function Home() {
     }
   }, [socket]);
 
-  const handleLogin = (e) => {
+  const handleCreate = (e) => {
     e.preventDefault();
     socket.auth = { username };
     socket.connect();
@@ -105,53 +110,19 @@ export default function Home() {
 
   return (
     <main>
-      <div className="flex items-center justify-center h-screen ">
-        {loggedIn ? (
-          <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md">
-            <p>
-              Hero: {hero?.username?.value} Current Users:{" "}
-              {players.map((player) => player.username.value)}
-            </p>
-            <button
-              type="submit"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-              onClick={handleLogoff}
-            >
-              Log Off
-            </button>
-          </div>
-        ) : (
-          <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md">
-            <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Username
-              </h3>
-
-              <form
-                className="mt-5 sm:flex sm:items-center"
-                onSubmit={handleLogin}
-              >
-                <div className="w-full sm:max-w-xs">
-                  <label htmlFor="username" className="sr-only">
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    name="username"
-                    id="username"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="enter username"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Enter
-                </button>
-              </form>
-            </div>
-          </div>
+      <div className="flex flex-col items-center justify-center h-screen ">
+        {loggedIn && (
+          <Game hero={hero} players={players} handleLogoff={handleLogoff} />
+        )}
+        {!loggedIn && (
+          <>
+            <Tabs setCreatorMode={setCreatorMode} creatorMode={creatorMode} />
+            {creatorMode ? (
+              <CreateGame handleCreate={handleCreate} />
+            ) : (
+              <JoinGame />
+            )}
+          </>
         )}
       </div>
     </main>
