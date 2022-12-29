@@ -2,7 +2,7 @@ export default function Game({ hero, players, handleLogoff }) {
   return (
     <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md">
       <p>
-        Hero: {hero?.username?.value} Current Users:{" "}
+        Hero: {hero?.username} Current Users:{" "}
         {players.map((player) => player.username)}
       </p>
       <button

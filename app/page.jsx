@@ -15,8 +15,6 @@ export default function Home() {
   const [hero, setHero] = useState({});
   const [players, setPlayers] = useState([]);
 
-  console.log(socket.userID);
-
   useEffect(() => {
     socket.on("session", ({ sessionID, userID }) => {
       // attach the session ID to the next reconnection attempts
@@ -30,18 +28,21 @@ export default function Home() {
     return () => {
       socket.off("session");
     };
-  }, [socket]);
+  }, [socket, players]);
 
   useEffect(() => {
     socket.on("users", (users) => {
       setPlayers(users);
-      // setHero(users.filter((player) => player.userID == socket.userID)[0]);
     });
 
     return () => {
       socket.off("users");
     };
   }, [socket]);
+
+  useEffect(() => {
+    setHero(players.find((user) => user.userID === socket.userID));
+  }, [socket, players]);
 
   useEffect(() => {
     const sessionID = localStorage.getItem("sessionID");
