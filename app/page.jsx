@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 
 import Game from "./Game";
+import Tabs from "./Tabs";
 import CreateGame from "./CreateGame";
+import JoinGame from "./JoinGame";
 
 import socket from "../socket";
-import Tabs from "./Tabs";
-import JoinGame from "./JoinGame";
 
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -15,49 +15,7 @@ export default function Home() {
   const [hero, setHero] = useState({});
   const [players, setPlayers] = useState([]);
 
-  useEffect(() => {
-    socket.on("users", (users) => {
-      setPlayers(users);
-      setHero(users.filter((player) => player.userID == socket.id)[0]);
-    });
-
-    return () => {
-      socket.off("users");
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    socket.on("user connected", (user) => {
-      const index = players.findIndex(
-        (player) => player.userID === user.userID
-      );
-
-      if (index === -1) {
-        setPlayers((prevState) => [...prevState, user]);
-      } else {
-        const modifiedArray = players;
-        modifiedArray.splice(index, 1, user);
-        setPlayers(modifiedArray);
-      }
-    });
-
-    return () => {
-      socket.off("user connected");
-    };
-  }, [socket, players]);
-
-  useEffect(() => {
-    socket.on("user disconnected", (user) => {
-      const modifiedArray = players.filter(
-        (player) => player.userID !== user.userID
-      );
-      setPlayers(modifiedArray);
-    });
-
-    return () => {
-      socket.off("user disconnected");
-    };
-  }, [socket, players]);
+  console.log(socket.userID);
 
   useEffect(() => {
     socket.on("session", ({ sessionID, userID }) => {
@@ -75,13 +33,14 @@ export default function Home() {
   }, [socket]);
 
   useEffect(() => {
-    const sessionID = localStorage.getItem("sessionID");
+    socket.on("users", (users) => {
+      setPlayers(users);
+      // setHero(users.filter((player) => player.userID == socket.userID)[0]);
+    });
 
-    if (sessionID) {
-      socket.auth = { sessionID };
-      socket.connect();
-      setLoggedIn(true);
-    }
+    return () => {
+      socket.off("users");
+    };
   }, [socket]);
 
   useEffect(() => {
@@ -96,13 +55,21 @@ export default function Home() {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    socket.auth = { username };
+    socket.auth = { username: username.value, room: "test" };
+    socket.connect();
+    setLoggedIn(true);
+  };
+
+  const handleJoin = (e) => {
+    e.preventDefault();
+    socket.auth = { username: username.value, room: room.value };
     socket.connect();
     setLoggedIn(true);
   };
 
   const handleLogoff = (e) => {
     e.preventDefault();
+    socket.emit("logoff");
     socket.disconnect();
     localStorage.removeItem("sessionID");
     setLoggedIn(false);
@@ -120,7 +87,7 @@ export default function Home() {
             {creatorMode ? (
               <CreateGame handleCreate={handleCreate} />
             ) : (
-              <JoinGame />
+              <JoinGame handleJoin={handleJoin} />
             )}
           </>
         )}

@@ -1,7 +1,3 @@
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function Tabs({ setCreatorMode, creatorMode }) {
   const tabs = [
     { name: "Join Game", href: "#", current: !creatorMode },

@@ -1,8 +1,8 @@
-export default function JoinGame({ handleLogin }) {
+export default function JoinGame({ handleJoin }) {
   return (
     <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md">
       <div className="px-4 py-5 sm:p-6">
-        <form className="mt-5 sm:flex sm:items-center" onSubmit={handleLogin}>
+        <form className="mt-5 sm:flex sm:items-center" onSubmit={handleJoin}>
           <div className="w-full sm:max-w-xs">
             <label htmlFor="username" className="sr-only">
               Username
