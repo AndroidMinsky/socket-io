@@ -12,6 +12,7 @@
     "@next/font": "13.1.0",
     "@tailwindcss/forms": "^0.5.3",
     "bufferutil": "^4.0.7",
+    "chance": "^1.1.9",
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.0",
     "jotai": "^1.12.0",

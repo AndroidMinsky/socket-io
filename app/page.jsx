@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Chance } from "chance";
 
 import Game from "./Game";
 import Tabs from "./Tabs";
@@ -8,6 +9,7 @@ import CreateGame from "./CreateGame";
 import JoinGame from "./JoinGame";
 
 import socket from "../socket";
+const chance = new Chance();
 
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -57,16 +59,15 @@ export default function Home() {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    socket.auth = { username: username.value, room: "test", admin: true };
+    const room = chance.last({ nationality: "en" });
+    socket.auth = { username: username.value, room, admin: true };
     socket.connect();
-    // setLoggedIn(true);
   };
 
   const handleJoin = (e) => {
     e.preventDefault();
     socket.auth = { username: username.value, room: room.value, admin: false };
     socket.connect();
-    // setLoggedIn(true);
   };
 
   const handleLogoff = (e) => {
