@@ -23,6 +23,7 @@ export default function Home() {
       localStorage.setItem("sessionID", sessionID);
       // save the ID of the user
       socket.userID = userID;
+      setLoggedIn(true);
     });
 
     return () => {
@@ -56,16 +57,16 @@ export default function Home() {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    socket.auth = { username: username.value, room: "test" };
+    socket.auth = { username: username.value, room: "test", admin: true };
     socket.connect();
-    setLoggedIn(true);
+    // setLoggedIn(true);
   };
 
   const handleJoin = (e) => {
     e.preventDefault();
-    socket.auth = { username: username.value, room: room.value };
+    socket.auth = { username: username.value, room: room.value, admin: false };
     socket.connect();
-    setLoggedIn(true);
+    // setLoggedIn(true);
   };
 
   const handleLogoff = (e) => {
