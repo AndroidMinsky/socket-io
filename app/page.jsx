@@ -16,6 +16,7 @@ export default function Home() {
   const [creatorMode, setCreatorMode] = useState(false);
   const [hero, setHero] = useState({});
   const [players, setPlayers] = useState([]);
+  const [game, setGame] = useState({});
 
   useEffect(() => {
     socket.on("session", ({ sessionID, userID }) => {
@@ -34,12 +35,13 @@ export default function Home() {
   }, [socket, players]);
 
   useEffect(() => {
-    socket.on("users", (users) => {
-      setPlayers(users);
+    socket.on("game", (game) => {
+      setPlayers(game.players);
+      setGame(game);
     });
 
     return () => {
-      socket.off("users");
+      socket.off("game");
     };
   }, [socket]);
 
@@ -82,7 +84,12 @@ export default function Home() {
     <main>
       <div className="flex flex-col items-center justify-center h-screen ">
         {loggedIn && (
-          <Game hero={hero} players={players} handleLogoff={handleLogoff} />
+          <Game
+            hero={hero}
+            players={players}
+            handleLogoff={handleLogoff}
+            game={game}
+          />
         )}
         {!loggedIn && (
           <>
