@@ -13,7 +13,9 @@ export default function Game({ hero, players, handleLogoff, game }) {
         {players.map((player, index) => (
           <span
             key={player.userID}
-            className={`${player.admin ? "font-bold" : ""}`}
+            className={`${player.admin ? "font-bold" : ""} ${
+              player.userID === game.activePlayer ? "italic" : ""
+            }`}
           >
             {player.username} {index}
           </span>
