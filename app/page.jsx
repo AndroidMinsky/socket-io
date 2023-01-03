@@ -61,7 +61,8 @@ export default function Home() {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    const room = chance.last({ nationality: "en" });
+    // const room = chance.last({ nationality: "en" });
+    const room = chance.word();
     socket.auth = { username: username.value, room, admin: true };
     socket.connect();
   };
@@ -89,6 +90,7 @@ export default function Home() {
             players={players}
             handleLogoff={handleLogoff}
             game={game}
+            socket={socket}
           />
         )}
         {!loggedIn && (
