@@ -77,7 +77,7 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
         <p>Waiting for the game to start...</p>
       )}
 
-      {socket.userID === game.activePlayer && game.started && !game.word && (
+      {hero?.userID === game.activePlayer && game.started && !game.word && (
         <WordInput handleWord={handleWord} />
       )}
       {hero?.userID !== game.activePlayer && game.started && !game.word && (

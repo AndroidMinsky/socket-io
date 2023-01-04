@@ -37,11 +37,10 @@ export default function Home() {
     return () => {
       socket.off("session");
     };
-  }, [socket, players]);
+  }, [socket]);
 
   useEffect(() => {
     socket.on("game", (game) => {
-      setPlayers(game.players);
       setGame(game);
     });
 
@@ -51,7 +50,11 @@ export default function Home() {
   }, [socket]);
 
   useEffect(() => {
-    setHero(players.find((user) => user.userID === socket.userID));
+    setPlayers(game.players);
+  }, [game]);
+
+  useEffect(() => {
+    setHero(players?.find((user) => user.userID === socket.userID));
   }, [socket, players]);
 
   useEffect(() => {
@@ -62,6 +65,19 @@ export default function Home() {
       socket.connect();
       setLoggedIn(true);
     }
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("admin-left", () => {
+      socket.emit("logoff");
+      socket.disconnect();
+      localStorage.removeItem("sessionID");
+      setLoggedIn(false);
+    });
+
+    return () => {
+      socket.off("admin-left");
+    };
   }, [socket]);
 
   const handleCreate = (data, e) => {
