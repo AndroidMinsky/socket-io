@@ -1,7 +1,20 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+
 export default function WordInput({ handleWord }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   return (
     <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md">
-      <form className="mt-5 sm:flex sm:items-center" onSubmit={handleWord}>
+      <form
+        className="mt-5 sm:flex sm:items-center"
+        onSubmit={handleSubmit(handleWord)}
+      >
         <div className="w-full sm:max-w-xs">
           <label htmlFor="word" className="sr-only">
             Word
@@ -12,7 +25,9 @@ export default function WordInput({ handleWord }) {
             id="word"
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             placeholder="enter word"
+            {...register("word", { required: true })}
           />
+          {errors.word && <p>Word is required</p>}
         </div>
         <button
           type="submit"

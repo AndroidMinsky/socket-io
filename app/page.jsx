@@ -64,17 +64,20 @@ export default function Home() {
     }
   }, [socket]);
 
-  const handleCreate = (e) => {
+  const handleCreate = (data, e) => {
     e.preventDefault();
-    // const room = chance.last({ nationality: "en" });
     const room = chance.word();
-    socket.auth = { username: username.value, room, admin: true };
+    socket.auth = { username: data.username, room, admin: true };
     socket.connect();
   };
 
-  const handleJoin = (e) => {
+  const handleJoin = (data, e) => {
     e.preventDefault();
-    socket.auth = { username: username.value, room: room.value, admin: false };
+    socket.auth = {
+      username: data.username,
+      room: data.room.toLowerCase(),
+      admin: false,
+    };
     socket.connect();
   };
 

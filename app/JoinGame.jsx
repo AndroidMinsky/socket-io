@@ -1,8 +1,35 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+
+import socket from "../socket";
+
 export default function JoinGame({ handleJoin }) {
+  const {
+    register,
+    setError,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  useEffect(() => {
+    socket.on("connect_error", (err) => {
+      setError(
+        "room",
+        { type: "custom", message: err.message },
+        { shouldFocus: true }
+      );
+    });
+  }, [socket]);
+
   return (
     <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md">
       <div className="px-4 py-5 sm:p-6">
-        <form className="mt-5 sm:flex sm:items-center" onSubmit={handleJoin}>
+        <form
+          className="mt-5 sm:flex sm:items-center"
+          onSubmit={handleSubmit(handleJoin)}
+        >
           <div className="w-full sm:max-w-xs">
             <label htmlFor="username" className="sr-only">
               Username
@@ -13,7 +40,9 @@ export default function JoinGame({ handleJoin }) {
               id="username"
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm  mb-2"
               placeholder="enter username"
+              {...register("username", { required: true })}
             />
+            {errors.username && <p>Username is required</p>}
             <label htmlFor="room" className="sr-only">
               Room ID
             </label>
@@ -23,7 +52,9 @@ export default function JoinGame({ handleJoin }) {
               id="room"
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               placeholder="enter room id"
+              {...register("room", { required: "Room is required" })}
             />
+            {errors.room && <p>{errors.room.message}</p>}
           </div>
           <button
             type="submit"

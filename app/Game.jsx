@@ -11,13 +11,13 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
     socket.emit("start", game.roomID);
   };
 
-  const handleWord = (e) => {
+  const handleWord = ({ word }, e) => {
     e.preventDefault();
     const impostor = chance.pickone(
       players.filter((player) => player.userID !== hero.userID)
     );
 
-    socket.emit("word", { word: word.value, impostor });
+    socket.emit("word", { word, impostor });
   };
 
   const handleRestart = (e) => {
@@ -44,7 +44,7 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
           </p>
           <p>
             Current Users:{" "}
-            {players.map((player, index) => (
+            {players.map((player) => (
               <span
                 key={player.userID}
                 className={`${player.admin ? "font-bold" : ""} ${
@@ -73,7 +73,7 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
           )}
         </div>
       )}
-      {!socket.admin && !game.started && !game.word && (
+      {!hero?.admin && !game.started && !game.word && (
         <p>Waiting for the game to start...</p>
       )}
 
