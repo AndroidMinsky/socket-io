@@ -14,9 +14,14 @@ const chance = new Chance();
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [creatorMode, setCreatorMode] = useState(false);
-  const [hero, setHero] = useState({});
+  const [hero, setHero] = useState();
   const [players, setPlayers] = useState([]);
   const [game, setGame] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     socket.on("session", ({ sessionID, userID }) => {
@@ -93,7 +98,7 @@ export default function Home() {
             socket={socket}
           />
         )}
-        {!loggedIn && (
+        {!loggedIn && !loading && (
           <>
             <Tabs setCreatorMode={setCreatorMode} creatorMode={creatorMode} />
             {creatorMode ? (
@@ -103,6 +108,7 @@ export default function Home() {
             )}
           </>
         )}
+        {loading && <p>Loading...</p>}
       </div>
     </main>
   );
