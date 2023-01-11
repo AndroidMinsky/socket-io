@@ -79,10 +79,7 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
         <div className="flex flex-row gap-5">
           {hero &&
             players.map((player) => (
-              <div
-                className="drop-shadow-clay mb-10 text-white"
-                key={player.userID}
-              >
+              <div className="mb-10 text-white" key={player.userID}>
                 <div
                   className="card 
               [ p-[10px] rounded-[25px] ] 
@@ -114,34 +111,11 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
         className="card 
                 [ p-[50px] rounded-[45px] ] 
                 [ bg-[#3d465e] shadow-clay-card ] 
-                [ flex items-center gap-5 flex-col ]"
+                [ flex items-center gap-5 flex-col text-white ]"
       >
         {hero && (
           <div>
-            <p>
-              Hi {hero.username}, welcome to the {hero.room} room
-            </p>
-            <p>
-              Current Users:{" "}
-              {players.map((player) => (
-                <span
-                  key={player.userID}
-                  className={`${player.admin ? "font-bold" : ""} ${
-                    player.userID === game.activePlayer ? "italic" : ""
-                  }`}
-                  style={{ marginRight: "0.5rem" }}
-                >
-                  {player.username}
-                </span>
-              ))}
-            </p>
-            <button
-              type="submit"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-              onClick={handleLogoff}
-            >
-              Log Off
-            </button>
+            <p>Welcome to the {hero.room} room</p>
             {hero.admin && !game.started && !game.word && (
               <button
                 className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
