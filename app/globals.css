@@ -91,7 +91,10 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: white;
+  /* background: white; */
+  background-image: url('/images/bg.png');
+  background-size: cover;
+  background-position: center;
 }
 
 a {

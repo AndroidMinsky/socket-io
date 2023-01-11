@@ -10,32 +10,43 @@ export default function CreateGame({ handleCreate }) {
   } = useForm();
 
   return (
-    <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md">
-      <form
-        className="mt-5 sm:flex sm:items-center"
-        onSubmit={handleSubmit(handleCreate)}
+    <form
+      className="mt-2 flex flex-col items-center"
+      onSubmit={handleSubmit(handleCreate)}
+    >
+      <div>
+        <label htmlFor="username" className="block pl-3 text-[#999] mb-1 ">
+          Username
+        </label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          className={`block w-full rounded-[45px]  px-4 shadow-sm ${
+            errors.username
+              ? "focus:border-red-300 focus:ring-red-300 border-red-300"
+              : "focus:border-[#8bbbb4] focus:ring-[#8bbbb4] border-[#999]"
+          }  bg-[#565b6d] text-white`}
+          placeholder="enter username"
+          {...register("username", { required: true })}
+        />
+        {errors.username && (
+          <p className="block pl-3 text-red-300 mt-1 ">Username is required</p>
+        )}
+      </div>
+      <button
+        type="submit"
+        className="[ mt-8 w-full py-3 rounded-[45px] in-flex ] 
+                           [ font-bold text-white ] 
+                           [ bg-gradient-to-r from-[#8ebab7] 
+                             to-[#3a525c] 
+                             hover:bg-gradient-to-r 
+                             hover:from-[#3a525c] 
+                             hover:to-[#8ebab7]  ] 
+                           [ shadow-clay-btn ]"
       >
-        <div className="w-full sm:max-w-xs">
-          <label htmlFor="username" className="sr-only">
-            Username
-          </label>
-          <input
-            type="text"
-            name="username"
-            id="username"
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="enter username"
-            {...register("username", { required: true })}
-          />
-          {errors.username && <p>Username is required</p>}
-        </div>
-        <button
-          type="submit"
-          className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-        >
-          Create
-        </button>
-      </form>
-    </div>
+        Create
+      </button>
+    </form>
   );
 }

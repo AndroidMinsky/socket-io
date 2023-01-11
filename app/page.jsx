@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Chance } from "chance";
+import Image from "next/image";
 
 import Game from "./Game";
 import Tabs from "./Tabs";
@@ -83,16 +84,19 @@ export default function Home() {
   const handleCreate = (data, e) => {
     e.preventDefault();
     const room = chance.word();
-    socket.auth = { username: data.username, room, admin: true };
+    const avatar = chance.integer({ min: 1, max: 20 });
+    socket.auth = { username: data.username, room, admin: true, avatar };
     socket.connect();
   };
 
   const handleJoin = (data, e) => {
     e.preventDefault();
+    const avatar = chance.integer({ min: 1, max: 20 });
     socket.auth = {
       username: data.username,
-      room: data.room.toLowerCase(),
+      room: data.room.toLowerCase().trim(),
       admin: false,
+      avatar,
     };
     socket.connect();
   };
@@ -107,7 +111,7 @@ export default function Home() {
 
   return (
     <main>
-      <div className="flex flex-col items-center justify-center h-screen ">
+      <div className="flex flex-col items-center justify-center h-screen">
         {loggedIn && (
           <Game
             hero={hero}
@@ -119,12 +123,33 @@ export default function Home() {
         )}
         {!loggedIn && !loading && (
           <>
-            <Tabs setCreatorMode={setCreatorMode} creatorMode={creatorMode} />
-            {creatorMode ? (
-              <CreateGame handleCreate={handleCreate} />
-            ) : (
-              <JoinGame handleJoin={handleJoin} />
-            )}
+            <div>
+              <Image
+                src={"/images/detective.png"}
+                width={350}
+                height={500}
+                alt="detective club"
+                priority
+              />
+            </div>
+            <div className="drop-shadow-clay">
+              <div
+                className="card 
+                [ p-[50px] max-w-lg rounded-[45px] ] 
+                [ bg-[#3d465e] shadow-clay-card ] 
+                [ flex items-center gap-5 flex-col ]"
+              >
+                <Tabs
+                  setCreatorMode={setCreatorMode}
+                  creatorMode={creatorMode}
+                />
+                {creatorMode ? (
+                  <CreateGame handleCreate={handleCreate} />
+                ) : (
+                  <JoinGame handleJoin={handleJoin} />
+                )}
+              </div>
+            </div>
           </>
         )}
         {loading && <p>Loading...</p>}
