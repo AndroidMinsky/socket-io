@@ -76,14 +76,31 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
         <h1 className="text-white font-bold mb-4 text-center text-lg	">
           Players
         </h1>
-        <div className="flex flex-row gap-5">
+        <div className="flex flex-row gap-5 justify-center">
           {hero &&
             players.map((player) => (
-              <div className="mb-10 text-white" key={player.userID}>
+              <div
+                className="mb-10 text-white text-center flex flex-col relative"
+                key={player.userID}
+              >
+                {player.admin && (
+                  <Image
+                    src={"/images/crown.png"}
+                    width={25}
+                    height={25}
+                    className={`place-self-center absolute -top-4 ${
+                      player.userID !== game.activePlayer ? "brightness-75" : ""
+                    }`}
+                  />
+                )}
                 <div
-                  className="card 
+                  className={`card 
               [ p-[10px] rounded-[25px] ] 
-              [ bg-[#3d465e] shadow-clay-card  ]"
+              [ bg-[#3d465e] shadow-clay-card  ${
+                player.userID === game.activePlayer
+                  ? "border-2 border-[#8bbbb4]"
+                  : ""
+              } ]`}
                 >
                   <Image
                     src={`/images/avatars/${player.avatar}.png`}
@@ -91,13 +108,16 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
                     height={80}
                     alt="detective club"
                     priority
-                    className="rounded-[15px]"
+                    className={`rounded-[15px] ${
+                      player.userID !== game.activePlayer ? "brightness-75" : ""
+                    }`}
                   />
                   <span
-                    className={`${player.admin ? "font-bold" : ""} ${
-                      player.userID === game.activePlayer ? "italic" : ""
+                    className={`text-center ${
+                      player.userID !== game.activePlayer
+                        ? "brightness-75 text-center"
+                        : ""
                     }`}
-                    style={{ marginRight: "0.5rem" }}
                   >
                     {player.username}
                   </span>
@@ -109,13 +129,15 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
       {/* Main Section */}
       <div
         className="card 
-                [ p-[50px] rounded-[45px] ] 
+                [ p-[30px] rounded-[45px] ] 
                 [ bg-[#3d465e] shadow-clay-card ] 
                 [ flex items-center gap-5 flex-col text-white ]"
       >
         {hero && (
           <div>
-            <p>Welcome to the {hero.room} room</p>
+            <p>
+              Room ID: <span className="font-bold">{hero.room}</span>
+            </p>
             {hero.admin && !game.started && !game.word && (
               <button
                 className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
@@ -166,10 +188,9 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
             <p>Word: {game.word}</p>
             <p>
               Impostor:{" "}
-              {
+              {players &&
                 players.find((player) => player.userID === game.impostor)
-                  .username
-              }
+                  .username}
             </p>
             {hero?.admin ? (
               <button
