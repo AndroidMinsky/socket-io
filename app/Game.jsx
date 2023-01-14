@@ -4,6 +4,7 @@ import WordInput from "./WordInput";
 import { Chance } from "chance";
 import Image from "next/image";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const chance = new Chance();
 
@@ -16,11 +17,20 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
 
   const handleWord = ({ word }, e) => {
     e.preventDefault();
-    const impostor = chance.pickone(
-      players.filter((player) => player.userID !== hero.userID)
-    );
-
-    socket.emit("word", { word, impostor });
+    const impostors = players.filter((player) => player.userID !== hero.userID);
+    if (impostors.length > 0) {
+      const impostor = chance.pickone(impostors);
+      socket.emit("word", { word, impostor });
+    } else {
+      toast.error("Let's wait for more players", {
+        icon: "😅",
+        style: {
+          borderRadius: "30px",
+          background: "#3d465e",
+          color: "#F5A4A4",
+        },
+      });
+    }
   };
 
   const handleRestart = (e) => {
@@ -166,7 +176,7 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
           <p className="my-6">Waiting for the word...</p>
         )}
         {game.started && game.word && (
-          <div>
+          <div className="text-center">
             {socket.userID === game.impostor ? (
               <p
                 className="my-8 text-center text-3xl"
@@ -182,7 +192,7 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
               </p>
             )}
             <button
-              className="inline-flex w-full items-center justify-center rounded-2xl border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none"
+              className="inline-flex  items-center justify-center rounded-2xl border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none"
               onPointerEnter={() => setHiddenWord(false)}
               onPointerLeave={() => setHiddenWord(true)}
               onTouchStart={() => setHiddenWord(false)}
@@ -209,24 +219,28 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
           </div>
         )}
         {!game.started && game.word && (
-          <div>
-            <p>Word: {game.word}</p>
-            <p>
+          <div className="my-8 ">
+            <p className="text-xl text-center	">
+              Word: <span className="font-bold">{game.word}</span>
+            </p>
+            <p className="text-xl text-center	">
               Impostor:{" "}
-              {(players &&
-                players.find((player) => player.userID === game.impostor)
-                  ?.username) ||
-                "chicken"}
+              <span className="font-bold">
+                {(players &&
+                  players.find((player) => player.userID === game.impostor)
+                    ?.username) ||
+                  "chicken"}
+              </span>
             </p>
             {hero?.admin ? (
               <button
-                className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                 onClick={handleNext}
               >
                 Next Round
               </button>
             ) : (
-              <p>Waiting for the next round to begin</p>
+              <p className="mt-8">Waiting for the next round...</p>
             )}
           </div>
         )}

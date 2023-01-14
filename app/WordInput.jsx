@@ -11,7 +11,7 @@ export default function WordInput({ handleWord }) {
 
   return (
     <form
-      className="mt-2 flex flex-col items-center"
+      className="my-6 flex flex-col items-center"
       onSubmit={handleSubmit(handleWord)}
     >
       <div>
@@ -40,7 +40,7 @@ export default function WordInput({ handleWord }) {
                            [ font-bold text-white ] 
                            [ bg-[#698a87] 
                            hover:bg-[#566D6B]  ] 
-                           [ shadow-clay-btn ]"
+                           "
       >
         Enter
       </button>

@@ -137,8 +137,8 @@ export default function Home() {
             <div>
               <Image
                 src={"/images/detective.png"}
-                width={350}
-                height={500}
+                width={270}
+                height={250}
                 alt="detective club"
                 priority
               />
