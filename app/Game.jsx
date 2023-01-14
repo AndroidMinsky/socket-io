@@ -4,7 +4,7 @@ import WordInput from "./WordInput";
 import { Chance } from "chance";
 import Image from "next/image";
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const chance = new Chance();
 
@@ -52,6 +52,25 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
     console.log("Started");
   };
 
+  const handleActivePLayer = (playerID) => {
+    if (hero.admin) {
+      if (!game.impostor) {
+        socket.emit("change-active", playerID);
+      } else {
+        toast.error("Not a good idea", {
+          icon: "😎",
+          style: {
+            borderRadius: "30px",
+            background: "#3d465e",
+            color: "#F5A4A4",
+          },
+        });
+      }
+    } else {
+      return;
+    }
+  };
+
   return (
     // Header
     <div className="drop-shadow-clay">
@@ -92,12 +111,13 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
         <h1 className="text-white font-bold mb-4 text-center text-lg	">
           Players
         </h1>
-        <div className="flex flex-row gap-5 justify-center">
+        <div className="flex flex-row gap-5 justify-center flex-wrap">
           {hero &&
             players.map((player) => (
               <div
-                className="mb-10 text-white text-center flex flex-col relative"
+                className="text-white text-center flex flex-col relative"
                 key={player.userID}
+                onClick={() => handleActivePLayer(player.userID)}
               >
                 {player.admin && (
                   <Image
@@ -145,7 +165,7 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
       </div>
       {/* Main Section */}
       <div
-        className="card 
+        className="card mt-8
                 [ p-[30px] rounded-[45px] ] 
                 [ bg-[#3d465e] shadow-clay-card ] 
                 [ flex items-center flex-col text-white ]"
