@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { Chance } from "chance";
 import Image from "next/image";
+import { ColorRing } from "react-loader-spinner";
+import toast, { Toaster } from "react-hot-toast";
 
 import Game from "./Game";
 import Tabs from "./Tabs";
@@ -74,6 +76,14 @@ export default function Home() {
       socket.disconnect();
       localStorage.removeItem("sessionID");
       setLoggedIn(false);
+      toast.error("Admin has left the room", {
+        icon: "😭",
+        style: {
+          borderRadius: "30px",
+          background: "#3d465e",
+          color: "#F5A4A4",
+        },
+      });
     });
 
     return () => {
@@ -111,6 +121,7 @@ export default function Home() {
 
   return (
     <main>
+      <Toaster position="bottom-center" reverseOrder={false} />
       <div className="flex flex-col items-center justify-center h-screen">
         {loggedIn && (
           <Game
@@ -152,7 +163,17 @@ export default function Home() {
             </div>
           </>
         )}
-        {loading && <p>Loading...</p>}
+        {loading && (
+          <ColorRing
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="blocks-loading"
+            wrapperStyle={{}}
+            wrapperClass="blocks-wrapper"
+            colors={["#8bbbb4", "#8bbbb4", "#8bbbb4", "#8bbbb4", "#8bbbb4"]}
+          />
+        )}
       </div>
     </main>
   );

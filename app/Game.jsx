@@ -3,10 +3,12 @@
 import WordInput from "./WordInput";
 import { Chance } from "chance";
 import Image from "next/image";
+import { useState } from "react";
 
 const chance = new Chance();
 
 export default function Game({ hero, players, handleLogoff, game, socket }) {
+  const [hiddenWord, setHiddenWord] = useState(true);
   const handleStart = (e) => {
     e.preventDefault();
     socket.emit("start", game.roomID);
@@ -36,6 +38,10 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
     socket.emit("next", game.roomID);
   };
 
+  const handleHiddenWord = () => {
+    console.log("Started");
+  };
+
   return (
     // Header
     <div className="drop-shadow-clay">
@@ -45,7 +51,7 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
                 [ bg-[#3d465e] shadow-clay-card ]"
       >
         {hero && (
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-5">
             <div className="flex items-center">
               <Image
                 src={`/images/avatars/${hero.avatar}.png`}
@@ -62,10 +68,10 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
             <div className="flex items-center">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-xl border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                className="inline-flex items-center justify-center rounded-2xl border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none "
                 onClick={handleLogoff}
               >
-                Log Out
+                Exit
               </button>
             </div>
           </div>
@@ -88,8 +94,9 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
                     src={"/images/crown.png"}
                     width={25}
                     height={25}
+                    alt="crown"
                     className={`place-self-center absolute -top-4 ${
-                      player.userID !== game.activePlayer ? "brightness-75" : ""
+                      player.userID !== game.activePlayer ? "brightness-50" : ""
                     }`}
                   />
                 )}
@@ -109,7 +116,7 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
                     alt="detective club"
                     priority
                     className={`rounded-[15px] ${
-                      player.userID !== game.activePlayer ? "brightness-75" : ""
+                      player.userID !== game.activePlayer ? "brightness-50" : ""
                     }`}
                   />
                   <span
@@ -131,16 +138,16 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
         className="card 
                 [ p-[30px] rounded-[45px] ] 
                 [ bg-[#3d465e] shadow-clay-card ] 
-                [ flex items-center gap-5 flex-col text-white ]"
+                [ flex items-center flex-col text-white ]"
       >
         {hero && (
           <div>
             <p>
-              Room ID: <span className="font-bold">{hero.room}</span>
+              Room ID : <span className="font-bold">{hero.room}</span>
             </p>
             {hero.admin && !game.started && !game.word && (
               <button
-                className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                className="my-6 inline-flex w-full items-center justify-center rounded-2xl border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none "
                 onClick={handleStart}
               >
                 Start
@@ -149,32 +156,50 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
           </div>
         )}
         {!hero?.admin && !game.started && !game.word && (
-          <p>Waiting for the game to start...</p>
+          <p className="my-6">Waiting for the game to start...</p>
         )}
 
         {hero?.userID === game.activePlayer && game.started && !game.word && (
           <WordInput handleWord={handleWord} />
         )}
         {hero?.userID !== game.activePlayer && game.started && !game.word && (
-          <p>Waiting for the word...</p>
+          <p className="my-6">Waiting for the word...</p>
         )}
         {game.started && game.word && (
           <div>
             {socket.userID === game.impostor ? (
-              <p>Impostor</p>
+              <p
+                className="my-8 text-center text-3xl"
+                onTouchStart={handleHiddenWord}
+                onTouchEnd={() => console.log("Ended")}
+              >
+                {hiddenWord ? "*****" : "Impostor"}
+              </p>
             ) : (
-              <p>{game.word}</p>
+              <p className="my-8 text-center text-3xl">
+                {" "}
+                {hiddenWord ? "*****" : game.word}
+              </p>
             )}
+            <button
+              className="inline-flex w-full items-center justify-center rounded-2xl border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none"
+              onPointerEnter={() => setHiddenWord(false)}
+              onPointerLeave={() => setHiddenWord(true)}
+              onTouchStart={() => setHiddenWord(false)}
+              onTouchEnd={() => setHiddenWord(true)}
+            >
+              Show Word
+            </button>
             {hero?.admin && (
               <div>
                 <button
-                  className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="mt-10 inline-flex w-full items-center justify-center rounded-2xl border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none"
                   onClick={handleRestart}
                 >
                   Restart
                 </button>
                 <button
-                  className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="mt-3 inline-flex w-full items-center justify-center rounded-2xl border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none"
                   onClick={handleEnd}
                 >
                   End Game
@@ -188,13 +213,14 @@ export default function Game({ hero, players, handleLogoff, game, socket }) {
             <p>Word: {game.word}</p>
             <p>
               Impostor:{" "}
-              {players &&
+              {(players &&
                 players.find((player) => player.userID === game.impostor)
-                  .username}
+                  ?.username) ||
+                "chicken"}
             </p>
             {hero?.admin ? (
               <button
-                className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-[#698a87] px-4 py-2 font-medium text-white shadow-sm hover:bg-[#566D6B] focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                 onClick={handleNext}
               >
                 Next Round

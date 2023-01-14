@@ -70,14 +70,11 @@ export default function JoinGame({ handleJoin }) {
       </div>
       <button
         type="submit"
-        className="[ mt-8 w-full py-3 rounded-[45px] in-flex ] 
-                           [ font-bold text-white ] 
-                           [ bg-gradient-to-r from-[#8ebab7] 
-                             to-[#3a525c] 
-                             hover:bg-gradient-to-r 
-                             hover:from-[#3a525c] 
-                             hover:to-[#8ebab7]  ] 
-                           [ shadow-clay-btn ]"
+        className="[ mt-8 w-full py-3 rounded-[45px] in-flex  ] 
+        [ font-bold text-white ] 
+        [ bg-[#698a87] 
+        hover:bg-[#566D6B]  ] 
+        [ shadow-clay-btn ]"
       >
         Join
       </button>
