@@ -113,7 +113,6 @@ export default function Home() {
 
   const handleLogoff = (e) => {
     e.preventDefault();
-    console.log(hero);
     socket.emit("logoff", hero);
     socket.disconnect();
     localStorage.removeItem("sessionID");
