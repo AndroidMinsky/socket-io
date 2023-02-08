@@ -15,6 +15,7 @@ export default function JoinGame({ handleJoin }) {
 
   useEffect(() => {
     socket.on("connect_error", (err) => {
+      console.log(err);
       setError(
         "room",
         { type: "custom", message: err.message },
